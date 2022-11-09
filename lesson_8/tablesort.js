@@ -6,17 +6,37 @@ function sortTableByColumn(table, column, asc = true) {
     // Sort each row
     const sortedRows = rows.sort((a,b) => {
         const aColText = a.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
-        const bColText = a.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
+        const bColText = b.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
 
         console.log(aColText);
         console.log(bColText);
 
+        return aColText > bColText ? (1*dirModifier) : (-1*dirModifier);
+
     })
+
+    // Remove all existing TRs from the table
+    while(tBody.firstChild){
+        tBody.removeChild(tBody.firstChild);
+    }
+
+    // Re-add the newly sorted rows
+    tBody.append(...sortedRows);
+
+    // Remember how the column is currently sorted
+    table.querySelectorAll('th').forEach(th => th.classList.remove('th-sort-asc','th-sort-desc'));
+    table.querySelector(`th:nth-child(${column+1})`).classList.toggle('th-sort-asc',asc);
+    table.querySelector(`th:nth-child(${column+1})`).classList.toggle('th-sort-desc',!asc);
 }
 
-sortTableByColumn(document.querySelector('table'),1);
+// sortTableByColumn(document.querySelector('table'),1);
 
-// let anwarTable = document.querySelector('table');
-// console.log(anwarTable.tBodies[0]);
-// let arr = anwarTable.tBodies[0].querySelector('tr');
-// console.log(arr)
+document.querySelectorAll('.table-sortable th').forEach(headerCell => {
+    headerCell.addEventListener('click',() => {
+        const tableElement = headerCell.parentElement.parentElement.parentElement;
+        const headerIndex = Array.prototype.indexOf.call(headerCell.parentElement.children, headerCell);
+        const currentIsAscending = headerCell.classList.contains('th-sort-asc');
+        
+        sortTableByColumn(tableElement,headerIndex,!currentIsAscending)
+    })
+})
