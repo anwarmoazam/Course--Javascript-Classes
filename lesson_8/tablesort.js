@@ -15,6 +15,8 @@ function sortTableByColumn(table, column, asc = true) {
 
     })
 
+    console.log(sortedRows);
+
     // Remove all existing TRs from the table
     while(tBody.firstChild){
         tBody.removeChild(tBody.firstChild);
